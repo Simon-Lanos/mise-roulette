@@ -17,10 +17,20 @@
                 Appuyer sur R, N ou V en fonction de ce qui tombe
             </li>
         </ol>
-        <label class="mb-3">
-            Mise initial
-            <input type="number" name="mise">
-        </label>
+        <div class="row">
+            <div class="col-6">
+                <label class="mb-3">
+                    Mise initial
+                    <input type="number" name="mise" step="500">
+                </label>
+            </div>
+            <div class="col-6">
+                <label class="mb-3">
+                    Total
+                    <input type="number" name="total" readonly="readonly" value="0">
+                </label>
+            </div>
+        </div>
         <table class="table table-bordered">
             <thead>
                 <tr class="table-primary">
@@ -51,33 +61,39 @@
         }
 
         function updateMise(color) {
-                const mise = getMise();
+            const mise = getMise();
 
-                const elMise = document.getElementById(color);
-                const miseActuelle = parseInt(elMise.innerText);
-                elMise.innerText = (miseActuelle * 2 + ((miseActuelle === 0) * mise));
+            const elMise = document.getElementById(color);
+            const miseActuelle = parseInt(elMise.innerText);
+            elMise.innerText = (miseActuelle * 2 + ((miseActuelle === 0) * mise));
 
+            elMise.classList.remove('table-success');
+
+            if ((miseActuelle * 2 * 2 * 2) > 50000) {
                 elMise.classList.remove('table-success');
-                
-                if ((miseActuelle * 2 * 2 * 2) > 50000) {
-                    elMise.classList.remove('table-success');
-                    elMise.classList.add('table-warning');
-                }
-                if ((miseActuelle * 2 * 2) > 50000) {
-                    elMise.classList.remove('table-warning');
-                    elMise.classList.add('table-danger');
-                }
-
+                elMise.classList.add('table-warning');
+            }
+            if ((miseActuelle * 2 * 2) > 50000) {
+                elMise.classList.remove('table-warning');
+                elMise.classList.add('table-danger');
+            }
         }
 
         function resetMise(color) {
-                const mise = getMise();
+            const mise = getMise();
 
-                const elMise = document.getElementById(color);
-                elMise.innerText = mise;
-                elMise.classList.add('table-success');
-                elMise.classList.remove('table-warning');
-                elMise.classList.remove('table-danger');
+            const elMise = document.getElementById(color);
+            elMise.innerText = mise;
+            elMise.classList.add('table-success');
+            elMise.classList.remove('table-warning');
+            elMise.classList.remove('table-danger');
+        }
+
+        function addTotal() {
+            const mise = getMise();
+
+            const [elTotal] = document.getElementsByName('total');
+            elTotal.value = parseInt(elTotal.value) + mise
         }
 
         document.addEventListener("keydown", (event) => {
@@ -90,12 +106,14 @@
             if (event.keyCode === 82) {
                 updateMise('black');
                 resetMise('red');
+                addTotal();
             }
 
             // n
             if (event.keyCode === 78) {
                 updateMise('red');
                 resetMise('black');
+                addTotal();
             }
 
             // v
